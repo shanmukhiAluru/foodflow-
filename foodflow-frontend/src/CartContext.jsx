@@ -14,7 +14,10 @@ export function CartProvider({ children }) {
             if (existingItem) {
                 return currentItems.map((item) =>
                     item.id === food.id
-                        ? { ...item, quantity: item.quantity + 1 }
+                        ? {
+                            ...item,
+                            quantity: item.quantity + 1
+                        }
                         : item
                 );
             }
@@ -29,8 +32,50 @@ export function CartProvider({ children }) {
         });
     }
 
+    function increaseQuantity(foodId) {
+        setCartItems((currentItems) =>
+            currentItems.map((item) =>
+                item.id === foodId
+                    ? {
+                        ...item,
+                        quantity: item.quantity + 1
+                    }
+                    : item
+            )
+        );
+    }
+
+    function decreaseQuantity(foodId) {
+        setCartItems((currentItems) =>
+            currentItems
+                .map((item) =>
+                    item.id === foodId
+                        ? {
+                            ...item,
+                            quantity: item.quantity - 1
+                        }
+                        : item
+                )
+                .filter((item) => item.quantity > 0)
+        );
+    }
+
+    function removeFromCart(foodId) {
+        setCartItems((currentItems) =>
+            currentItems.filter((item) => item.id !== foodId)
+        );
+    }
+
     return (
-        <CartContext.Provider value={{ cartItems, addToCart }}>
+        <CartContext.Provider
+            value={{
+                cartItems,
+                addToCart,
+                increaseQuantity,
+                decreaseQuantity,
+                removeFromCart
+            }}
+        >
             {children}
         </CartContext.Provider>
     );
